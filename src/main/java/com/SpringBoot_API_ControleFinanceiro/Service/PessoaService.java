@@ -1,6 +1,7 @@
 package com.SpringBoot_API_ControleFinanceiro.Service;
 
 import com.SpringBoot_API_ControleFinanceiro.Entity.Pessoa;
+import com.SpringBoot_API_ControleFinanceiro.Exception.UserWasRegistred;
 import com.SpringBoot_API_ControleFinanceiro.Repository.PessoaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,10 +21,23 @@ public class PessoaService {
         return this.repository.findById(id).orElseThrow();
     }
 
-    public Pessoa save(Pessoa pessoa) {
+    // Verifica se a pessoa ja está cadastrado, só dps salva.
+    public String save(Pessoa pessoa)throws UserWasRegistred {
+        boolean cpf = repository.existsByCpf(pessoa.getCpf());
+        boolean nome = repository.existsByNome(pessoa.getNome());
 
-        return this.repository.save(pessoa);
+        if (cpf && nome) {
+            throw new UserWasRegistred("Pessoa já cadastrada com o nome e CPF informados!");
+        } else if (cpf) {
+            throw new UserWasRegistred("CPF já cadastrado!");
+        } else if (nome) {
+            throw new UserWasRegistred("Nome já cadastrado!");
+        } else {
+            repository.save(pessoa);
+            return "Usuário cadastrado com sucesso!";
+        }
     }
+
 
     public Pessoa update(Pessoa pessoa) {
         return this.repository.save(pessoa);

@@ -9,6 +9,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/meta")
+@CrossOrigin(origins = "http://localhost:4200")
 public class MetaController {
     @Autowired
     private MetaService metaService;
