@@ -1,8 +1,11 @@
 package com.SpringBoot_API_ControleFinanceiro.Controller;
 
 import com.SpringBoot_API_ControleFinanceiro.Entity.Lancamento;
+import com.SpringBoot_API_ControleFinanceiro.Exception.NotFoundBalance;
 import com.SpringBoot_API_ControleFinanceiro.Service.LancamentoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,9 +32,7 @@ public class LancamentoController {
     }
 
     @PutMapping
-    public Lancamento update(@RequestBody Lancamento lancamento) {
-        return this.service.update(lancamento);
-    }
+    public Lancamento update(@RequestBody Lancamento lancamento) {return this.service.update(lancamento);}
 
     @DeleteMapping(value = "/{id}")
     public void deleteById(@PathVariable Integer id) {

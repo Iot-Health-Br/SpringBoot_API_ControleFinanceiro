@@ -11,11 +11,14 @@ public class Grupo {
     private String nome="";
     @Column(nullable = false)
     private String descricao="";
+    @Column(nullable = false)
+    private String saldo="";
 
-    public Grupo(Long id, String nome, String descricao) {
+    public Grupo(Long id, String nome, String descricao, String saldo) {
         Id = id;
         this.nome = nome;
         this.descricao = descricao;
+        this.saldo = saldo;
     }
 
     public Grupo() {
@@ -41,12 +44,21 @@ public class Grupo {
         this.descricao = descricao;
     }
 
+    public String getSaldo() {
+        return saldo;
+    }
+
+    public void setSaldo(String saldo) {
+        this.saldo = saldo;
+    }
+
     @Override
     public String toString() {
-        return "GrupoModel{" +
+        return "Grupo{" +
                 "Id=" + Id +
                 ", nome='" + nome + '\'' +
                 ", descricao='" + descricao + '\'' +
+                ", saldo='" + saldo + '\'' +
                 '}';
     }
 }

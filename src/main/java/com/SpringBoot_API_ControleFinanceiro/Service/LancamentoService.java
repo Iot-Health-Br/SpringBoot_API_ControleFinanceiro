@@ -1,6 +1,7 @@
 package com.SpringBoot_API_ControleFinanceiro.Service;
 
 import com.SpringBoot_API_ControleFinanceiro.Entity.Lancamento;
+import com.SpringBoot_API_ControleFinanceiro.Exception.NotFoundBalance;
 import com.SpringBoot_API_ControleFinanceiro.Repository.LancamentoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,14 +21,9 @@ public class LancamentoService {
         return this.repository.findById(id).orElseThrow();
     }
 
-    public Lancamento save(Lancamento lancamento) {
+    public Lancamento save(Lancamento lancamento) {return this.repository.save(lancamento);}
 
-        return this.repository.save(lancamento);
-    }
-
-    public Lancamento update(Lancamento lancamento) {
-        return this.repository.save(lancamento);
-    }
+    public Lancamento update(Lancamento lancamento) {return this.repository.save(lancamento);}
 
     public void delete(Integer id) {
         this.repository.deleteById(id);

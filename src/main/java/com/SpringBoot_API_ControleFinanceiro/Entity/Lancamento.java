@@ -22,6 +22,11 @@ public class Lancamento {
     @Column(nullable = false)
     private String categoria="";
 
+    //Relacionamento de Lançamento com grupo
+    @ManyToOne
+    @JoinColumn(name = "grupo_id")
+    private Grupo grupo;
+
     public Lancamento(Long id, String nome, String descricao, Date data, String tipo, String valor, String categoria) {
         this.id = id;
         this.nome = nome;
