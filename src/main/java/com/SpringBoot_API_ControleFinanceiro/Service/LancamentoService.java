@@ -29,7 +29,7 @@ public class LancamentoService {
 
     public Lancamento save(Lancamento lancamento) {return this.lancamentoRepository.save(lancamento);}
 
-    public String updateLancamento(Lancamento lancamento) throws NotFoundBalance {
+    public String update(Lancamento lancamento) throws NotFoundBalance {
         // Busca o grupo relacionado ao lançamento
         Grupo grupo = lancamento.getGrupo();
 
@@ -48,6 +48,17 @@ public class LancamentoService {
         } else {
             // Se o saldo for insuficiente, retorna mensagem de erro
             throw new NotFoundBalance("Saldo do grupo insuficiente para o lançamento.");
+        }
+    }
+
+    public Lancamento updateLancamento(Lancamento lancamento) throws NotFoundBalance {
+        Grupo grupo = grupoRepository.findById(lancamento.getGrupo().getId())
+                .orElseThrow(() -> new NotFoundBalance("Grupo não encontrado"));
+
+        if (grupo.getSaldo().compareTo(lancamento.getValor()) >= 0) {
+            return this.lancamentoRepository.save(lancamento);
+        } else {
+            throw new NotFoundBalance("Saldo insuficiente no grupo para realizar o lançamento");
         }
     }
 

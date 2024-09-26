@@ -33,14 +33,20 @@ public class LancamentoController {
 
 
     @PutMapping
-    public ResponseEntity<String> update(@RequestBody Lancamento lancamento) {
+    public ResponseEntity<?> update(@RequestBody Lancamento lancamento) {
         try {
-            String response = this.service.updateLancamento(lancamento);
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
+            Lancamento updatedLancamento = this.service.updateLancamento(lancamento);
+            return ResponseEntity.ok(updatedLancamento);
+        } catch (NotFoundBalance e) {
             return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro interno ao atualizar o lançamento.");
         }
     }
+
+
+
+
 
     @DeleteMapping(value = "/{id}")
     public void deleteById(@PathVariable Integer id) {
