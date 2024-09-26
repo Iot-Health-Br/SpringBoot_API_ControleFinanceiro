@@ -31,8 +31,16 @@ public class LancamentoController {
         return this.service.save(lancamento);
     }
 
+
     @PutMapping
-    public Lancamento update(@RequestBody Lancamento lancamento) {return this.service.update(lancamento);}
+    public ResponseEntity<String> update(@RequestBody Lancamento lancamento) {
+        try {
+            String response = this.service.updateLancamento(lancamento);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 
     @DeleteMapping(value = "/{id}")
     public void deleteById(@PathVariable Integer id) {

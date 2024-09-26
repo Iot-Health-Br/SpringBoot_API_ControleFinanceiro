@@ -2,6 +2,8 @@ package com.SpringBoot_API_ControleFinanceiro.Entity;
 
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
+
 @Entity
 public class Grupo {
     @Id
@@ -12,9 +14,13 @@ public class Grupo {
     @Column(nullable = false)
     private String descricao="";
     @Column(nullable = false)
-    private String saldo="";
+    private BigDecimal saldo;
 
-    public Grupo(Long id, String nome, String descricao, String saldo) {
+    @ManyToOne
+    @JoinColumn(name = "pessoa_id")
+    private Pessoa pessoa;
+
+    public Grupo(Long id, String nome, String descricao, BigDecimal saldo) {
         Id = id;
         this.nome = nome;
         this.descricao = descricao;
@@ -44,11 +50,11 @@ public class Grupo {
         this.descricao = descricao;
     }
 
-    public String getSaldo() {
+    public BigDecimal getSaldo() {
         return saldo;
     }
 
-    public void setSaldo(String saldo) {
+    public void setSaldo(BigDecimal saldo) {
         this.saldo = saldo;
     }
 

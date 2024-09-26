@@ -1,7 +1,11 @@
 package com.SpringBoot_API_ControleFinanceiro.Entity;
 
+import com.SpringBoot_API_ControleFinanceiro.Enums.CategoriaEnum;
+import com.SpringBoot_API_ControleFinanceiro.Enums.TipoLancamentoEnum;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
 import java.sql.Date;
 
 @Entity
@@ -9,32 +13,42 @@ public class Lancamento {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
     @Column(nullable = false)
     private String nome="";
+
     @Column(nullable = false)
     private String descricao="";
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssX")
     @Column(nullable = false)
     private Date data;
+
     @Column(nullable = false)
-    private String tipo="";
-    @Column(nullable = false)
-    private String valor="";
-    @Column(nullable = false)
-    private String categoria="";
+    private BigDecimal valor;
+
+    //Enum Tipo de Lançamento
+    @Enumerated(EnumType.STRING)
+    private TipoLancamentoEnum tipo;
+
+    //Enum Categoria de Lançamento
+    @Enumerated(EnumType.STRING)
+    private CategoriaEnum categoria;
 
     //Relacionamento de Lançamento com grupo
     @ManyToOne
     @JoinColumn(name = "grupo_id")
     private Grupo grupo;
 
-    public Lancamento(Long id, String nome, String descricao, Date data, String tipo, String valor, String categoria) {
+    public Lancamento(Long id, String nome, String descricao, Date data, BigDecimal valor, TipoLancamentoEnum tipo, CategoriaEnum categoria, Grupo grupo) {
         this.id = id;
         this.nome = nome;
         this.descricao = descricao;
         this.data = data;
-        this.tipo = tipo;
         this.valor = valor;
+        this.tipo = tipo;
         this.categoria = categoria;
+        this.grupo = grupo;
     }
 
     public Lancamento() {
@@ -73,40 +87,35 @@ public class Lancamento {
         this.data = data;
     }
 
-    public String getTipo() {
-        return tipo;
-    }
-
-    public void setTipo(String tipo) {
-        this.tipo = tipo;
-    }
-
-    public String getValor() {
+    public BigDecimal getValor() {
         return valor;
     }
 
-    public void setValor(String valor) {
+    public void setValor(BigDecimal valor) {
         this.valor = valor;
     }
 
-    public String getCategoria() {
+    public TipoLancamentoEnum getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(TipoLancamentoEnum tipo) {
+        this.tipo = tipo;
+    }
+
+    public CategoriaEnum getCategoria() {
         return categoria;
     }
 
-    public void setCategoria(String categoria) {
+    public void setCategoria(CategoriaEnum categoria) {
         this.categoria = categoria;
     }
 
-    @Override
-    public String toString() {
-        return "LancamentoModel{" +
-                "id=" + id +
-                ", nome='" + nome + '\'' +
-                ", descricao='" + descricao + '\'' +
-                ", data=" + data +
-                ", tipo='" + tipo + '\'' +
-                ", valor='" + valor + '\'' +
-                ", categoria='" + categoria + '\'' +
-                '}';
+    public Grupo getGrupo() {
+        return grupo;
+    }
+
+    public void setGrupo(Grupo grupo) {
+        this.grupo = grupo;
     }
 }
