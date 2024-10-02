@@ -1,6 +1,7 @@
 package com.SpringBoot_API_ControleFinanceiro.Controller;
 
 import com.SpringBoot_API_ControleFinanceiro.Entity.Lancamento;
+import com.SpringBoot_API_ControleFinanceiro.Exception.FaultOfAssociation;
 import com.SpringBoot_API_ControleFinanceiro.Exception.NotFoundBalance;
 import com.SpringBoot_API_ControleFinanceiro.Service.LancamentoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,15 +28,22 @@ public class LancamentoController {
     }
 
     @PostMapping
-    public Lancamento save(@RequestBody Lancamento lancamento) {
-        return this.service.save(lancamento);
+    public ResponseEntity<String> save(@RequestBody Lancamento lancamento) {
+        try {
+            String saveLancamento = String.valueOf(service.save(lancamento));
+            return ResponseEntity.ok(saveLancamento);
+        } catch (FaultOfAssociation e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro interno ao atualizar o lançamento.");
+        }
     }
 
 
     @PutMapping
-    public ResponseEntity<?> update(@RequestBody Lancamento lancamento) {
+    public ResponseEntity<String> update(@RequestBody Lancamento lancamento) {
         try {
-            Lancamento updatedLancamento = this.service.updateLancamento(lancamento);
+            String updatedLancamento = String.valueOf(service.updateLancamento(lancamento));
             return ResponseEntity.ok(updatedLancamento);
         } catch (NotFoundBalance e) {
             return ResponseEntity.badRequest().body(e.getMessage());

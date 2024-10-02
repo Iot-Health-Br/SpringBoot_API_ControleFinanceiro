@@ -2,6 +2,8 @@ package com.SpringBoot_API_ControleFinanceiro.Service;
 
 import com.SpringBoot_API_ControleFinanceiro.Entity.Grupo;
 import com.SpringBoot_API_ControleFinanceiro.Entity.Lancamento;
+import com.SpringBoot_API_ControleFinanceiro.Enums.CategoriaEnum;
+import com.SpringBoot_API_ControleFinanceiro.Exception.FaultOfAssociation;
 import com.SpringBoot_API_ControleFinanceiro.Exception.NotFoundBalance;
 import com.SpringBoot_API_ControleFinanceiro.Repository.GrupoRepository;
 import com.SpringBoot_API_ControleFinanceiro.Repository.LancamentoRepository;
@@ -27,36 +29,34 @@ public class LancamentoService {
         return this.lancamentoRepository.findById(id).orElseThrow();
     }
 
-    public Lancamento save(Lancamento lancamento) {return this.lancamentoRepository.save(lancamento);}
+    public String save(Lancamento lancamento) throws FaultOfAssociation {
+        Grupo grupo = grupoRepository.findById(lancamento.getGrupo().getId())
+                .orElseThrow(() -> new FaultOfAssociation("Grupo não encontrado"));
 
-    public String update(Lancamento lancamento) throws NotFoundBalance {
-        // Busca o grupo relacionado ao lançamento
-        Grupo grupo = lancamento.getGrupo();
-
-        if (grupo == null) {
-            throw new NotFoundBalance("Grupo não encontrado para o lançamento.");
-        }
-
-        // Verifica se o saldo do grupo é maior que o valor do lançamento
-        BigDecimal saldoGrupo = grupo.getSaldo();
-        BigDecimal valorLancamento = new BigDecimal(String.valueOf(lancamento.getValor()));
-
-        if (saldoGrupo.compareTo(valorLancamento) >= 0) {
-            // Se o saldo for suficiente, realiza o update
+        if (grupo.getSaldo().compareTo(lancamento.getValor()) >= 0) {
             lancamentoRepository.save(lancamento);
-            return "Lançamento atualizado com sucesso!";
+            BigDecimal novoSaldo = grupo.getSaldo().subtract(lancamento.getValor());
+            grupo.setSaldo(novoSaldo);
+            // Atualiza o grupo
+            grupoRepository.save(grupo);
+            return "Lançamento salvo com sucesso!";
         } else {
-            // Se o saldo for insuficiente, retorna mensagem de erro
-            throw new NotFoundBalance("Saldo do grupo insuficiente para o lançamento.");
+            BigDecimal novoSaldo = grupo.getSaldo().subtract(lancamento.getValor());
+            grupo.setSaldo(novoSaldo);
+            // Atualiza o grupo
+            grupoRepository.save(grupo);
+            lancamentoRepository.save(lancamento);
+            return "Saldo insuficiente no grupo, o saldo encontra-se negativo após está transação!";
         }
     }
 
-    public Lancamento updateLancamento(Lancamento lancamento) throws NotFoundBalance {
+    public String updateLancamento(Lancamento lancamento) throws NotFoundBalance {
         Grupo grupo = grupoRepository.findById(lancamento.getGrupo().getId())
                 .orElseThrow(() -> new NotFoundBalance("Grupo não encontrado"));
 
         if (grupo.getSaldo().compareTo(lancamento.getValor()) >= 0) {
-            return this.lancamentoRepository.save(lancamento);
+            lancamentoRepository.save(lancamento);
+            return "Feito o update da dispesa com sucesso!";
         } else {
             throw new NotFoundBalance("Saldo insuficiente no grupo para realizar o lançamento");
         }
