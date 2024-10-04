@@ -1,6 +1,7 @@
 package com.SpringBoot_API_ControleFinanceiro.Service;
 
 import com.SpringBoot_API_ControleFinanceiro.Entity.Grupo;
+import com.SpringBoot_API_ControleFinanceiro.Exception.GroupWasRegistred;
 import com.SpringBoot_API_ControleFinanceiro.Repository.GrupoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,13 +21,14 @@ public class GrupoService {
         return this.grupoRepository.findById(id).orElseThrow();
     }
 
-    public Grupo save(Grupo grupo) {
-
-        return this.grupoRepository.save(grupo);
+    public String save(Grupo grupo)throws GroupWasRegistred {
+        grupoRepository.save(grupo);
+        return "Grupo salvo com sucesso!";
     }
 
-    public Grupo update(Grupo grupo) {
-        return this.grupoRepository.save(grupo);
+    public String update(Grupo grupo)throws GroupWasRegistred {
+        grupoRepository.save(grupo);
+        return "Grupo atualizado com sucesso!";
     }
 
     public void delete(Integer id) {

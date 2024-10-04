@@ -43,8 +43,16 @@ public class PessoaController {
     }
 
     @PutMapping
-    public Pessoa update(@RequestBody Pessoa pessoa) {
-        return this.service.update(pessoa);
+    public ResponseEntity<String> update(@RequestBody Pessoa pessoa) {
+        try {
+            String resultado = String.valueOf(service.update(pessoa));
+            return ResponseEntity.ok(resultado);
+        } catch (UserWasRegistred e) {
+            return ResponseEntity.badRequest().body("Erro ao atualizar a pessoa.");
+        }
+        catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro interno ao atualizar a pessoa.");
+        }
     }
 
     @DeleteMapping(value = "/{id}")

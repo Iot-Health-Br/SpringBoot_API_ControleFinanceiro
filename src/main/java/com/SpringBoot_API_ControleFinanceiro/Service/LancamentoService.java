@@ -2,7 +2,6 @@ package com.SpringBoot_API_ControleFinanceiro.Service;
 
 import com.SpringBoot_API_ControleFinanceiro.Entity.Grupo;
 import com.SpringBoot_API_ControleFinanceiro.Entity.Lancamento;
-import com.SpringBoot_API_ControleFinanceiro.Enums.CategoriaEnum;
 import com.SpringBoot_API_ControleFinanceiro.Exception.FaultOfAssociation;
 import com.SpringBoot_API_ControleFinanceiro.Exception.NotFoundBalance;
 import com.SpringBoot_API_ControleFinanceiro.Repository.GrupoRepository;
@@ -56,9 +55,18 @@ public class LancamentoService {
 
         if (grupo.getSaldo().compareTo(lancamento.getValor()) >= 0) {
             lancamentoRepository.save(lancamento);
+            BigDecimal novoSaldo = grupo.getSaldo().subtract(lancamento.getValor());
+            grupo.setSaldo(novoSaldo);
+            // Atualiza o grupo
+            grupoRepository.save(grupo);
             return "Feito o update da dispesa com sucesso!";
         } else {
-            throw new NotFoundBalance("Saldo insuficiente no grupo para realizar o lançamento");
+            BigDecimal novoSaldo = grupo.getSaldo().subtract(lancamento.getValor());
+            grupo.setSaldo(novoSaldo);
+            // Atualiza o grupo
+            grupoRepository.save(grupo);
+            lancamentoRepository.save(lancamento);
+            return "Saldo insuficiente no grupo, o saldo encontra-se negativo após está transação!";
         }
     }
 

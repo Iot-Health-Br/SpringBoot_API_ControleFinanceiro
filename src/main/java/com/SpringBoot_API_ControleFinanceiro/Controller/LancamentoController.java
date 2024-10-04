@@ -13,6 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/lancamento")
+@CrossOrigin(origins = "http://localhost:4200") // Permitir o CORS para o Angular
 public class LancamentoController {
     @Autowired
     private LancamentoService service;
@@ -38,8 +39,6 @@ public class LancamentoController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro interno ao atualizar o lançamento.");
         }
     }
-
-
     @PutMapping
     public ResponseEntity<String> update(@RequestBody Lancamento lancamento) {
         try {

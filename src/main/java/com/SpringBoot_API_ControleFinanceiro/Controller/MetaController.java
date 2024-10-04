@@ -1,8 +1,11 @@
 package com.SpringBoot_API_ControleFinanceiro.Controller;
 
 import com.SpringBoot_API_ControleFinanceiro.Entity.Meta;
+import com.SpringBoot_API_ControleFinanceiro.Exception.GoalsWasRegistred;
 import com.SpringBoot_API_ControleFinanceiro.Service.MetaService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,13 +28,25 @@ public class MetaController {
     }
 
     @PostMapping
-    public Meta save(@RequestBody Meta meta) {
-        return this.metaService.save(meta);
+    public ResponseEntity<String> save(@RequestBody Meta meta) {
+        try {
+            String saveMeta = String.valueOf(metaService.save(meta));
+            return ResponseEntity.ok(saveMeta);
+        } catch (GoalsWasRegistred e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro interno ao salvar a meta.");
+        }
     }
 
     @PutMapping
-    public Meta update(@RequestBody Meta meta) {
-        return this.metaService.update(meta);
+    public ResponseEntity<String> update(@RequestBody Meta meta) {
+        try{
+            String updateMeta = String.valueOf(metaService.update(meta));
+            return ResponseEntity.ok(updateMeta);
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro interno ao atualizar a meta.");
+        }
     }
 
     @DeleteMapping(value = "/{id}")

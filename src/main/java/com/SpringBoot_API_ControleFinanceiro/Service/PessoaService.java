@@ -38,8 +38,9 @@ public class PessoaService {
         }
     }
 
-    public Pessoa update(Pessoa pessoa) {
-        return this.repository.save(pessoa);
+    public String update(Pessoa pessoa)throws UserWasRegistred {
+        repository.save(pessoa);
+        return "Usuário atualizado com sucesso!";
     }
 
     public void delete(Integer id) {
